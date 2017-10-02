@@ -10,15 +10,47 @@
 
     <br />
     <div class="col-sm-8">
-        <div class="col-sm-12"><div class="col-sm-12">Fruit</div></div>
+        <div class="col-sm-12"><div class="col-sm-12"><h3>Fruit</h3></div></div>
         @foreach (Fruit f in ViewBag.Fruits)
         {
-            <div class="col-sm-12" style="margin: 15px 15px 15px 15px; border: 1px solid black; float:left;">
-                <div class="col-sm-6 RemoveSpace">
-                    <div class="col-sm-12 RemoveSpace"><div class="col-sm-12 RemoveSpace">@Html.Raw(f.Name)</div> <div class="col-sm-6 RemoveSpace">Price : @Html.Raw(f.price)</div></div>
+            using (Html.BeginForm("AddItem", "Home"))
+            {
+                <div class="col-sm-12" style="border: 1px solid black;float:left;">
+                    <div class="col-sm-7 RemoveSpace">
+                            <div style="padding:0;" value="@Html.Raw(f.Name)" name="name" class="col-sm-12">@Html.Raw(f.Name)</div> 
+                            <div style="padding:0;" class="col-sm-12">@Html.Raw(f.price) kr</div>
+                            <input name="fruitID" class="hidden" value="@Html.Raw(f.id)"/>
+                            
+                            <label labelfor="Amount">Amount</label>
+                            <input value="1" style="width:40%;" type="number" name="Amount" min="1" />
+                            
+
+                    </div>
+                    <button type="submit" style="margin-top:5px; margin-bottom:5px; float:right;" class="col-sm-3">Add to Cart</button>
                 </div>
-                <button style="margin-top:5px; margin-bottom:5px; float:right;" class="col-sm-3" type="submit" onclick="location.href='@Url.Action("AddItem", "Home", new { fruitID = f.id, Amount = 1 })'">Add to Cart</button>
-            </div>
+            }
+        }
+    </div>
+    <div class="col-sm-4" style="border: 1px solid black;">
+
+        @if (ViewBag.Cart != null)
+        {
+            <p>Items in Cart</p>
+            foreach (CartableItem item in ViewBag.Cart)
+            {
+                <div class="row" style="border: 1px dashed black; border-top:none;">
+                    <div>
+                    @Html.Raw(item.name)
+                    </div>
+                    <div>
+                    Amount : @Html.Raw(item.amount)
+                    </div>
+                    <div>
+                    Price : @Html.Raw(item.price) kr
+                    </div>
+                </div>
+            }
+           <button onclick="location.href='@Url.Action("PurchaseItems", "Home")'">Checkout</button>
         }
     </div>
 </div>

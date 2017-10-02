@@ -127,10 +127,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CartableItem.cs" />
     <Compile Include="Models\ContentOfOutgoingTransaction.cs" />
     <Compile Include="Models\Fruit.cs" />
     <Compile Include="Models\ProcessedOutgoingTransactions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceApiConnection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />

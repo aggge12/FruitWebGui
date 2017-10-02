@@ -15,41 +15,51 @@ namespace FruitWebGui.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            string apiUrl = ConfigurationManager.AppSettings["ApiBaseUrl"].ToString();
+            ServiceApiConnection apiHelper = new ServiceApiConnection();
 
-            List<Fruit> fruits;
+            if (Session["ItemsInBasket"] != null)
+            {
 
-            HttpClient client = new HttpClient();
-            //client.BaseAddress = new Uri(apiUrl);
-            client.DefaultRequestHeaders.Accept.Clear();
-            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            //var stringContent = new StringContent(JsonConvert.SerializeObject(fruit), System.Text.Encoding.UTF8, "application/json");
-            HttpResponseMessage response = client.GetAsync(apiUrl + "/Fruits/GetFruit").Result;
-            using (HttpContent content = response.Content)
-            {
-                var json = content.ReadAsStringAsync().Result;
-                fruits = JsonConvert.DeserializeObject<List<Fruit>>(json);
-            }
-            if (response.IsSuccessStatusCode)
-            {
-              
+                string[] items = Session["ItemsInBasket"].ToString().Split(',');
+                List<CartableItem> cartItems = new List<CartableItem>();
 
-            }
-            else
-            {
-                
+                foreach (string item in items)
+                {
+                    string[] itemProperties = item.ToString().Split(':'); 
+                    Fruit fruit = (Fruit)apiHelper.GetFruitById(int.Parse(itemProperties[0]));
+                    int price = fruit.price * int.Parse(itemProperties[1]);
+                    CartableItem itemForCart = new CartableItem(int.Parse(itemProperties[0]), int.Parse(itemProperties[1]), fruit.Name, price);
+                    cartItems.Add(itemForCart); 
+                }
+
+                ViewBag.Cart = cartItems;
             }
 
-            ViewBag.Fruits = fruits;
+
+            ViewBag.Fruits = (List<Fruit>)apiHelper.GetAllFruits();
 
             return View();
         }
 
         public ActionResult AddItem(int fruitID, int Amount)
         {
-            // Add Item To Cookies or something
 
-            return Index();
+            // add item as json to cookies
+            
+            if (Session["ItemsInBasket"] == null)
+            {
+
+                Session["ItemsInBasket"] =  fruitID + ":" + Amount ;
+            }
+            else
+            {
+                Session["ItemsInBasket"] += "," + fruitID + ":" + Amount;
+            }
+
+
+    
+
+            return RedirectToAction("Index");
         }
 
         public ActionResult PurchaseItems()
