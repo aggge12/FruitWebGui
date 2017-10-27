@@ -69,5 +69,27 @@ namespace FruitWebGui
                 return false;
             }
         }
+
+        public bool MakePurchase(List<ContentOfOutgoingTransaction> items)
+        {
+            string apiUrl = ConfigurationManager.AppSettings["ApiBaseUrl"].ToString();
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(apiUrl);
+            client.DefaultRequestHeaders.Accept.Clear();
+            var stringContent = new StringContent(JsonConvert.SerializeObject(items), System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage response = client.PostAsync("/Fruits/PostFruitTransaction", stringContent).Result;
+            using (HttpContent content = response.Content)
+            {
+                var json = content.ReadAsStringAsync().Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;   
+                }
+            }
+        }
     }
 }

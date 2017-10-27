@@ -22,6 +22,17 @@ namespace FruitWebGui.Models
             this.ProcessedOutgoingTransaction = ProcessedOutgoingTransaction;
             this.Amount = Amount;
         }
+        public ContentOfOutgoingTransaction(int Fruit, int ProcessedOutgoingTransaction, int Amount)
+        {
+            this.Fruit = Fruit;
+            this.ProcessedOutgoingTransaction = ProcessedOutgoingTransaction;
+            this.Amount = Amount;
+        }
+        public ContentOfOutgoingTransaction(int Fruit, int Amount)
+        {
+            this.Fruit = Fruit;
+            this.Amount = Amount;
+        }
 
     }
 }

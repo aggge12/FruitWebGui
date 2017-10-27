@@ -27,6 +27,8 @@ textarea {
 
 .RemoveSpace{margin:0;padding:0;}
 
-.itemBorder {
-    border: 1px solid black;
+.PageContentTable {
+    background: #ffffff;
+    margin-top: -1px;
+    border: 1px solid #ffb31a;
 }

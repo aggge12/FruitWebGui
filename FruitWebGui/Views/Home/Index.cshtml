@@ -6,51 +6,63 @@
 }
 <h2 style="text-align:center">FruitShop!</h2>
 
-<div class="col-sm-10 col-sm-offset-2">
-
-    <br />
-    <div class="col-sm-8">
-        <div class="col-sm-12"><div class="col-sm-12"><h3>Fruit</h3></div></div>
-        @foreach (Fruit f in ViewBag.Fruits)
+<div class="col-sm-12">
+    <div class="col-sm-9">
+        @if (ViewBag.InitPurchase != null)
         {
-            using (Html.BeginForm("AddItem", "Home"))
-            {
-                <div class="col-sm-12" style="border: 1px solid black;float:left;">
-                    <div class="col-sm-7 RemoveSpace">
-                            <div style="padding:0;" value="@Html.Raw(f.Name)" name="name" class="col-sm-12">@Html.Raw(f.Name)</div> 
-                            <div style="padding:0;" class="col-sm-12">@Html.Raw(f.price) kr</div>
-                            <input name="fruitID" class="hidden" value="@Html.Raw(f.id)"/>
-                            
-                            <label labelfor="Amount">Amount</label>
-                            <input value="1" style="width:40%;" type="number" name="Amount" min="1" />
-                            
-
-                    </div>
-                    <button type="submit" style="margin-top:5px; margin-bottom:5px; float:right;" class="col-sm-3">Add to Cart</button>
-                </div>
-            }
+            <div class="col-sm-12 PageContentTable" style="float:left; padding:10px;">
+                <h3 style="margin-top:5px;">Confirm Purchase</h3>
+                @foreach (CartableItem item in ViewBag.Cart)
+                {
+                    <h4>Fruit: @Html.Raw(item.name), Amount: @Html.Raw(item.amount), Cost: @Html.Raw(item.price)</h4>
+                }
+                <h4 style="color:blue">Total Cost: @Html.Raw(ViewBag.totSum) </h4>
+                <button class="btn btn-primary" onclick="location.href='@Url.Action("PurchaseItems")'">Confirm Checkout</button>
+            </div>
+        }
+        @if (ViewBag.purchased != null)
+        {
+            <h3 style="padding: 10px;background: white; border: 2px solid green; border-radius: 10px;">Purchase Successful</h3>
         }
     </div>
-    <div class="col-sm-4" style="border: 1px solid black;">
+    <br />
+    <div class="col-sm-9">
+        <h3>Fruit</h3>
+        @if (ViewBag.Fruits != null)
+        {
+            foreach (Fruit f in ViewBag.Fruits)
+            {
+                using (Html.BeginForm("AddItem", "Home"))
+                {
+                    <div class="col-sm-12 PageContentTable" style="float:left; padding:5px;">
+                        <div value="@Html.Raw(f.Name)" name="name">@Html.Raw(f.Name)</div> 
+                        <div>@Html.Raw(f.price) kr</div>
+                        <input name="fruitID" class="hidden" value="@Html.Raw(f.id)"/>
+                            
+                        <div style="padding:0; margin:0;" class="col-sm-2">
+                            Amount : <input value="1" type="number" name="Amount" min="1" />
+                        </div>    
+                        <button class="btn btn-default col-sm-2" type="submit" style="margin-top:5px; margin-bottom:5px; float:right;">Add to Cart</button>
+                    </div>
+                }
+            }
+        }
 
+    </div>
+    <div class="col-sm-3">
         @if (ViewBag.Cart != null)
         {
-            <p>Items in Cart</p>
+            <h3 class="row">Cart</h3>
             foreach (CartableItem item in ViewBag.Cart)
             {
-                <div class="row" style="border: 1px dashed black; border-top:none;">
-                    <div>
-                    @Html.Raw(item.name)
-                    </div>
-                    <div>
-                    Amount : @Html.Raw(item.amount)
-                    </div>
-                    <div>
-                    Price : @Html.Raw(item.price) kr
-                    </div>
+                <div class="row PageContentTable">
+                    <div style="padding: 5px;">@Html.Raw(item.name)</div>
+                    <div style="padding: 5px;">Amount : @Html.Raw(item.amount)</div>
+                    <div style="padding: 5px;">Price : @Html.Raw(item.price) kr</div>
                 </div>
             }
-           <button onclick="location.href='@Url.Action("PurchaseItems", "Home")'">Checkout</button>
+            <div class="row" style="padding:5px;">Total price : @Html.Raw(ViewBag.totSum)</div>
+            <button class="row btn btn-warning" onclick="location.href='@Url.Action("InitPurchase")'">Checkout</button>
         }
     </div>
 </div>
