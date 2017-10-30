@@ -13,6 +13,7 @@ namespace FruitWebGui.Controllers
     public class HomeController : Controller
     {
         // GET: Home
+        Loghandler logger = new Loghandler();
         ServiceApiConnection apiHelper = new ServiceApiConnection();
         public ActionResult Index()
         {
@@ -34,7 +35,7 @@ namespace FruitWebGui.Controllers
                     ViewBag.totSum = 0;
                     foreach (CartableItem item in ViewBag.Cart)
                     {
-                        ViewBag.totSum += item.price;
+                        ViewBag.totSum += (item.price * item.amount);
                     }
 
                 }
@@ -49,6 +50,7 @@ namespace FruitWebGui.Controllers
             catch (Exception ex)
             {
                 ViewBag.errorMsg = ex.Message;
+                logger.logMessage(ex.Message + ", Index page could not be loaded");
             }
             return View();
         }
@@ -57,14 +59,27 @@ namespace FruitWebGui.Controllers
         public List<CartableItem> getCartItems()
         {
             List<CartableItem> cartables = new List<CartableItem>();
-
             string[] items = Session["ItemsInBasket"].ToString().Split(',');
 
             foreach (string item in items)
             {
+                bool added = false;
                 string[] itemProperties = item.ToString().Split(':'); //index 0 is ID and index 1 is amount
+                foreach (CartableItem cartable in cartables) // check if item is already in cart
+                {
+                    if (cartable.id == int.Parse(itemProperties[0]))
+                    {
+                        cartable.amount += int.Parse(itemProperties[1]);
+                        added = true;
+                        break;
+                    }
+                }
+                if (added) // if item amount already added, go to next item
+                {
+                    continue;
+                }
                 Fruit fruit = (Fruit)apiHelper.GetFruitById(int.Parse(itemProperties[0]));
-                int price = fruit.price * int.Parse(itemProperties[1]);
+                int price = fruit.price;
                 CartableItem itemForCart = new CartableItem(int.Parse(itemProperties[0]), int.Parse(itemProperties[1]), fruit.Name, price);
                 cartables.Add(itemForCart);
             }
@@ -76,7 +91,7 @@ namespace FruitWebGui.Controllers
 
             try
             {
-                // add item as json to cookies
+                // add item as json to session
 
                 if (Session["ItemsInBasket"] == null)
                 {
@@ -91,6 +106,7 @@ namespace FruitWebGui.Controllers
             catch (Exception ex)
             {
                 ViewBag.errorMsg = ex.Message;
+                logger.logMessage(ex.Message);
             }
 
 
@@ -134,6 +150,7 @@ namespace FruitWebGui.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] = ex.Message;
+                logger.logMessage(ex.Message + ", Purchase failed");
             }
             Session["ItemsInBasket"] = null;
             return RedirectToAction("Index");

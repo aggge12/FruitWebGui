@@ -127,6 +127,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Loghandler.cs" />
     <Compile Include="Models\CartableItem.cs" />
     <Compile Include="Models\ContentOfOutgoingTransaction.cs" />
     <Compile Include="Models\Fruit.cs" />

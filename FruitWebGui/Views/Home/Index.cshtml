@@ -4,17 +4,18 @@
     ViewBag.Title = "Index";
 
 }
-<h2 style="text-align:center">FruitShop!</h2>
-
+<br />
+<br />
 <div class="col-sm-12">
     <div class="col-sm-9">
         @if (ViewBag.InitPurchase != null)
         {
+            <br />
             <div class="col-sm-12 PageContentTable" style="float:left; padding:10px;">
                 <h3 style="margin-top:5px;">Confirm Purchase</h3>
                 @foreach (CartableItem item in ViewBag.Cart)
                 {
-                    <h4>Fruit: @Html.Raw(item.name), Amount: @Html.Raw(item.amount), Cost: @Html.Raw(item.price)</h4>
+                    <h4>Fruit: @Html.Raw(item.name), Amount: @Html.Raw(item.amount), Cost: @Html.Raw(item.price * item.amount)</h4>
                 }
                 <h4 style="color:blue">Total Cost: @Html.Raw(ViewBag.totSum) </h4>
                 <button class="btn btn-primary" onclick="location.href='@Url.Action("PurchaseItems")'">Confirm Checkout</button>
@@ -24,12 +25,16 @@
         {
             <h3 style="padding: 10px;background: white; border: 2px solid green; border-radius: 10px;">Purchase Successful</h3>
         }
+        @if (ViewBag.errorMsg != null)
+        {
+            <h3 style="padding: 10px;background: white; border: 2px solid red; border-radius: 10px;">@Html.Raw(ViewBag.errorMsg)</h3>
+        }
     </div>
     <br />
     <div class="col-sm-9">
-        <h3>Fruit</h3>
         @if (ViewBag.Fruits != null)
         {
+            <h3>Fruit</h3>
             foreach (Fruit f in ViewBag.Fruits)
             {
                 using (Html.BeginForm("AddItem", "Home"))
@@ -58,7 +63,7 @@
                 <div class="row PageContentTable">
                     <div style="padding: 5px;">@Html.Raw(item.name)</div>
                     <div style="padding: 5px;">Amount : @Html.Raw(item.amount)</div>
-                    <div style="padding: 5px;">Price : @Html.Raw(item.price) kr</div>
+                    <div style="padding: 5px;">Price : @Html.Raw(item.price * item.amount) kr</div>
                 </div>
             }
             <div class="row" style="padding:5px;">Total price : @Html.Raw(ViewBag.totSum)</div>
